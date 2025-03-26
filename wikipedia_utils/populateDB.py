@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
     # Load the dataset in chunks
     dataset = load_dataset("wikipedia", "20220301.en", split="train", trust_remote_code=True)
-    chunk_size = 1_000_000  # Process 1000 rows at a time
+    chunk_size = 1_000_000  # Process 1,000,000 rows at a time
 
     for i in range(0, len(dataset), chunk_size):
         chunk = dataset[i:i + chunk_size]
