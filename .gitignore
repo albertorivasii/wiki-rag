@@ -1,2 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Env & packages
+.env
+.venv/
+env/
+*.env
+
+# Models
+models/*
+!models/README.md  # Leave a placeholder if you want the folder tracked
+
+# Datasets
+data/*
+!data/README.md
+
+# Jupyter notebook checkpoints (if using notebooks)
+.ipynb_checkpoints/
+
+# Logs and runtime
+*.log
+*.sqlite3
 *.db
-*.ipynb
+.DS_Store
+
+# VS Code (optional)
+.vscode/
