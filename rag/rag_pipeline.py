@@ -1,29 +1,21 @@
 from utils.emebdding_utils import *
 from utils.qdrant_helpers import *
-from utils.llm import run_llm
+from utils.llm import *
 
-query= input("Ask Anything: ")
+query= "Why is Artificial Intelligence useful?"
 
 model= get_model()
-query_vector= model.endcode([query])[0].tolist()
+query_vector= embed_text([query], model)[0]
 
 client= ConnectToQuadrant()
 
 results= search_qdrant(client, "wiki_chunks", query_vector, limit=5)
 
-llm_context= "\n".join([result.payload["text"] for result in results])
+mistral= load_mistral(r"C:\Users\thesm\Documents\Personal Website\RAG Project\models\mistral-7b-instruct-v0.1.Q4_K_M.gguf", n_gpu_layers=20, n_ctx=2048)
 
-prompt= f"""
-<s>
-[INST]
-Answer the question based on the context provided below. If the answer is not in the context, say "I don't know".
-Context:
-{llm_context}
-Question: {query}
-Answer:
-[\INST]
-"""
+answer= run_llm(mistral, results, query)
 
-response= run_llm(prompt)
+print("Context:\n", results)
 
-print("Answer:\n", response)
+print("Answer:\n", answer)
+
