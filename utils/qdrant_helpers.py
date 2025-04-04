@@ -1,16 +1,14 @@
-import os
-import uuid
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance, PointStruct
 from dotenv import load_dotenv
+import os
+import uuid
 from typing import List
 
-
-# Load environment variables from .env file and get credentials
 load_dotenv()
 QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 QDRANT_HOST = os.getenv("QDRANT_HOST")
-
+os.environ.pop("SSL_CERT_FILE", None)
 
 def ConnectToQuadrant():
     return QdrantClient(url=QDRANT_HOST,
@@ -18,7 +16,7 @@ def ConnectToQuadrant():
                         )
 
 
-def create_collection(client:QdrantClient, colName:str, vector_dim:int, distance_metric:str="Cosine"):
+def create_collection(client:QdrantClient, colName:str, vector_dim:int):
     """
     Create a collection if it does not exist in Qdrant yet.
 
@@ -35,10 +33,10 @@ def create_collection(client:QdrantClient, colName:str, vector_dim:int, distance
     # check if the collection already exists
     if not client.collection_exists(colName):
         client.recreate_collection(
-            collection=colName,
-            vectors_config=VectorParams(size=vector_dim, distance=distance_metric),
+            collection_name=colName,
+            vectors_config=VectorParams(size=vector_dim, distance=Distance.COSINE)
         )
-        print(f"Collection '{colName}' created with vector dimension {vector_dim} and distance metric '{distance_metric}'.")
+        print(f"Collection '{colName}' created with vector dimension {vector_dim}.")
     else:
         print(f"Collection '{colName}' already exists.")
 
@@ -50,7 +48,7 @@ def upsert_embeddings(client:QdrantClient, colName:str, embeddings:list, texts:l
     points= []
     for i, (embedding, chunk) in enumerate(zip(embeddings, texts)):
         point= PointStruct(
-            id=uuid.uuid4(),  # Generate a unique ID for each point
+            id=str(uuid.uuid4()),  # Generate a unique ID for each point
             vector=embedding,  # The embedding vector
             payload={"text": chunk,
                      "topic": topic,
@@ -65,3 +63,12 @@ def upsert_embeddings(client:QdrantClient, colName:str, embeddings:list, texts:l
         points=points
     )
     print(f"Upserted {len(points)} points into collection '{colName}'.")
+
+
+def search_qdrant(client:QdrantClient, colName:str, query_vector:List[float], limit:int=5):
+    results= client.search(
+        collection_name=colName,
+        query_vector=query_vector,
+        limit=limit,
+    )
+    return results
