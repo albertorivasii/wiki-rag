@@ -17,7 +17,7 @@ def embed_text(texts:List[str], model:SentenceTransformer) -> List[List[float]]:
     Returns:
         List[List[float]]: List of embeddings for each text.
     """
-    embeddings = model.encode(texts)
+    embeddings = model.encode(texts).tolist()
     return embeddings
 
 

@@ -1,4 +1,4 @@
-from utils.emebdding_utils import get_model, embed_chunks
+from utils.emebdding_utils import get_model, embed_text
 from utils.chunking import chunk_text, count_tokens
 from utils.wikipedia_api import fetch_content, clean_text
 from utils.qdrant_helpers import *
@@ -24,7 +24,7 @@ chunks = chunk_text(cleaned, tokenizer, max_tokens=max_tokens)
 print(f"✅ Chunked into {len(chunks)} sections")
 
 # 3. Embed
-vectors = embed_chunks(chunks, model)
+vectors = embed_text(chunks, model)
 
 # 4. Connect to Qdrant and upsert
 client = ConnectToQuadrant()
