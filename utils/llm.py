@@ -1,4 +1,6 @@
 from llama_cpp import Llama
+from dotenv import load_dotenv
+
 
 def load_mistral(model_path:str, n_gpu_layers:int=20, n_ctx:int=2048):
     """
