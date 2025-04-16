@@ -108,3 +108,9 @@ def search_qdrant(client:QdrantClient, colName:str, query_vector:List[float], to
     )
     return results
 
+
+# delete collection
+# if __name__== "__main__":
+
+#     client= ConnectToQdrant()
+#     client.delete_collection("wiki_chunks")
