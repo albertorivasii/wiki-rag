@@ -15,7 +15,3 @@ mistral= load_mistral(r"C:\Users\thesm\Documents\Personal Website\RAG Project\mo
 
 answer= run_llm(mistral, results, query)
 
-print("Context:\n", results)
-
-print("Answer:\n", answer)
-
