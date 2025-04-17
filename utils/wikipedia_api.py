@@ -29,16 +29,19 @@ def clean_text(text:str) -> str:
 	text (str): The text to clean
 	Returns: cleaned text (str)
 	"""
-	# section headers
-	text= re.sub(r"=+", "", text) # Remove headings
+	# Remove everything after the last section (e.g., References, External links)
+	text = re.split(r"==\s*References\s*==|==\s*External links\s*==", text, maxsplit=1)[0]
 	
-	# references / citations
-	text= re.sub(r"\[\w+\]", "", text)
+	# Remove section headers
+	text = re.sub(r"=+", "", text)  # Remove headings
 	
-	# remove extra whitespace
-	text= re.sub(r"\s+", "", text)
+	# Remove references/citations
+	text = re.sub(r"\[\w+\]", "", text)
 	
-	return text.strip() # remove leading/trailing whitespace
+	# Remove extra whitespace
+	text = re.sub(r"\s+", " ", text)
+	
+	return text.strip()  # Remove leading/trailing whitespace
 
 
 # Testing
@@ -47,3 +50,4 @@ def clean_text(text:str) -> str:
 # 	topic= "Artificial Intelligence"
 # 	raw= fetch_content(topic)
 # 	print(raw[:1000])
+

@@ -50,16 +50,16 @@ def chunk_text(text: str, tokenizer, max_tokens: int = 512) -> list:
 
 
 # testing
-if __name__ == "__main__":
-	from wikipedia_api import *
-	tokenizer= AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
-	raw = fetch_content("Artificial Intelligence")
-	test_sent= "This is a sentence. It should tokenize well."
-	print(f"Number of tokens: {count_tokens(test_sent, tokenizer)}")
-	if raw:
-		clean= clean_text(raw)
-		chunks= chunk_text(clean, tokenizer, max_tokens=512)
-		print(f"Number of chunks: {len(chunks)}")
-		for i, chunk in enumerate(chunks):
-			print(f"Chunk {i+1}: {count_tokens(chunk, tokenizer)} tokens")
-			print(f"Chunk {i+1}: {chunk[0:300]}")
+# if __name__ == "__main__":
+# 	from wikipedia_api import *
+# 	tokenizer= AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+# 	raw = fetch_content("Artificial Intelligence")
+# 	test_sent= "This is a sentence. It should tokenize well."
+# 	print(f"Number of tokens: {count_tokens(test_sent, tokenizer)}")
+# 	if raw:
+# 		clean= clean_text(raw)
+# 		chunks= chunk_text(clean, tokenizer, max_tokens=512)
+# 		print(f"Number of chunks: {len(chunks)}")
+# 		for i, chunk in enumerate(chunks):
+# 			print(f"Chunk {i+1}: {count_tokens(chunk, tokenizer)} tokens")
+# 			print(f"Chunk {i+1}: {chunk[0:300]}")

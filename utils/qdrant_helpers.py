@@ -1,5 +1,5 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import VectorParams, Distance, PointStruct
+from qdrant_client.models import VectorParams, Distance, PointStruct, Filter, FieldCondition, MatchValue
 from dotenv import load_dotenv
 import os
 import uuid
@@ -10,11 +10,38 @@ QDRANT_API_KEY = os.getenv("QDRANT_API_KEY")
 QDRANT_HOST = os.getenv("QDRANT_HOST")
 os.environ.pop("SSL_CERT_FILE", None)
 
-def ConnectToQuadrant():
+def ConnectToQdrant():
     return QdrantClient(url=QDRANT_HOST,
                         api_key=QDRANT_API_KEY
                         )
 
+
+def topic_exists(client: QdrantClient, colName: str, topic: str) -> bool:
+    """
+    Check if a topic exists in the Qdrant collection.
+
+    Args:
+        client (QdrantClient): Qdrant client instance.
+        colName (str): Name of the collection to check.
+        topic (str): Topic to check for existence.
+
+    Returns:
+        bool: True if the topic exists, False otherwise.
+    """
+    results = client.search(
+        collection_name=colName,
+        query_vector=[0.0] * 384,  # Dummy vector (required but unused)
+        query_filter=Filter(
+            must=[
+                FieldCondition(
+                    key="topic",
+                    match=MatchValue(value=topic)
+                )
+            ]
+        ),
+        limit=1,
+    )
+    return len(results) > 0
 
 def create_collection(client:QdrantClient, colName:str, vector_dim:int):
     """
@@ -65,10 +92,25 @@ def upsert_embeddings(client:QdrantClient, colName:str, embeddings:list, texts:l
     print(f"Upserted {len(points)} points into collection '{colName}'.")
 
 
-def search_qdrant(client:QdrantClient, colName:str, query_vector:List[float], limit:int=5):
+def search_qdrant(client:QdrantClient, colName:str, query_vector:List[float], topic, limit:int=5):
     results= client.search(
         collection_name=colName,
         query_vector=query_vector,
+        query_filter=Filter(
+            must=[
+                FieldCondition(
+                    key="topic",
+                    match=MatchValue(value=topic)
+                )
+            ]
+        ),
         limit=limit,
     )
     return results
+
+
+# delete collection
+# if __name__== "__main__":
+
+#     client= ConnectToQdrant()
+#     client.delete_collection("wiki_chunks")
